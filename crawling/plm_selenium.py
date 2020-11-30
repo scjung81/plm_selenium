@@ -122,7 +122,7 @@ class DriverBuilder():
 
 
 
-from crawling.connection_info import get_connection_info
+from connection_info import get_connection_info
 
 #ID/PW
 plm_id = get_connection_info("plm_id")

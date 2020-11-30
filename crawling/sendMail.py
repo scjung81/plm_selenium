@@ -7,7 +7,7 @@ from email.mime.application import MIMEApplication
 from os.path import basename
 import os
 
-from crawling.connection_info import get_connection_info
+from connection_info import get_connection_info
 
 username = get_connection_info("gmail_user")
 password = get_connection_info("gmail_pw")
