@@ -1,4 +1,5 @@
 # ver 2.0 : 파일 처부 추가
+# ver 2.1 : PC 정보 추가
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -6,12 +7,23 @@ from email.mime.image import MIMEImage
 from email.mime.application import MIMEApplication
 from os.path import basename
 import os
+import socket
+
 
 from connection_info import get_connection_info
 
 username = get_connection_info("gmail_user")
 password = get_connection_info("gmail_pw")
 smtp_host = get_connection_info("gmail_smtp_host")
+pc_name = f"Host Name : {socket.gethostname()}"
+user_name = f"USERNAME : {os.environ['USERNAME']}"
+try:
+    ip = socket.gethostbyname(socket.gethostname()).split('.')
+    ip[1] = "xxx"
+    ip[2] = "xxx"
+    ip_addr = f"IP : {'.'.join(ip)}"
+except:
+    ip_addr = None
 
 def sendMail(to=["jungil.kwon@sktelecom.com", "d99419a7.o365skt.onmicrosoft.com@apac.teams.ms"], title="title", text="Text", images=None, files=None):
     smtp = smtplib.SMTP(smtp_host, 587)
@@ -21,7 +33,7 @@ def sendMail(to=["jungil.kwon@sktelecom.com", "d99419a7.o365skt.onmicrosoft.com@
     smtp.login(username, password)
 
     msg_related = MIMEMultipart('related')
-
+    text = f"[{pc_name}]\n[{user_name}]\n[{ip_addr}]\n{text}"
     plain_part = MIMEText(text)
     msg_related.attach(plain_part)
 
@@ -56,14 +68,18 @@ def sendMail(to=["jungil.kwon@sktelecom.com", "d99419a7.o365skt.onmicrosoft.com@
 
 ## Start
 if __name__ == "__main__":
-    lastdir = list(reversed(["data/" + f for f in os.listdir("data") if not "." in f]))[0]
-    last_dt = lastdir.split("/")[1]
-    print(lastdir, last_dt)
+    try :
+        path = "log/"
+        lastfile = list(reversed([path+f for f in os.listdir(path) if not os.path.isdir(f)]))[0]
+        files = []
+        files.append(lastfile)
+    except:
+        files = None
 
-    print(print(os.getcwd()))
-    files = []
-    files.append(f"{lastdir}/plm_swver_DataWarehouse_{last_dt}.xls")
     print(files)
 
-    sendMail(files=files)
+    print("Host Name ", socket.gethostname())
+    print("IP Address(Internal) : ", socket.gethostbyname(socket.gethostname()))
+    print("IP Address(External) : ", socket.gethostbyname(socket.getfqdn()))
 
+    sendMail(to=['neo2544@naver.com'], title="test", text="hello\nhello\n", files=files)
