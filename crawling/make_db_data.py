@@ -220,78 +220,13 @@ def StartMakeDb():
 
     swver.loc[swver["모델명_clear"].str.contains("LG")].head()
 
-    spec = pd.read_excel(os.path.join(os.getcwd(),lastdate,"spec.xlsx"), header=None)
-
-
-
-    print(spec.shape)
-    spec.head()
-
-    # 여러개의 multi column을 통합
-    spec.iloc[0:2] = spec.iloc[0:3].fillna(method='ffill', axis=1)
-
-    spec.iloc[0:3] = spec.iloc[0:3].fillna('')
-
-    spec.columns = spec.iloc[0:3].apply(lambda x: '.'.join([y for y in x if y]), axis=0)
-
-    spec = spec.iloc[3:]
-    spec.index = range(0, len(spec.index))
-
-    print(spec.shape)
-    spec.head()
-
-    # spec.columns
-
-    column = search_column(spec, "모델명")
-
-    spec['모델명.모델명'] = spec['모델명.모델명'].str.replace("\t", "")
-    # Spec 예외 처리
-    # 갤럭시 그랜드 (SAMSUNG GALAXY GRAND) (SHV-E275S) 추가 필요
-
-
-    spec.head()
-
-    ##Spec column 정보 추출
-    sample_model = ["SM-G977N", "LM-V500N"]
-    ss = spec["모델명.모델명"] == sample_model[0]
-    lg = spec["모델명.모델명"] == sample_model[1]
-    t = spec.loc[ss | lg].T
-    t.columns = sample_model
-
-    print("## Spec column 정보 저장")
-    file_name = os.path.join(os.getcwd(), lastdate, "spec_column_" + lastdate.split("/")[1] + ".xls")
-    t.to_excel(file_name)
-    print("Write Success : " + file_name)
-
-
-    # SW버전에 Pet Name 통합
-
-    def mergePetName(model):
-        model = str(model)
-
-
-        for y in range(0, spec.index.size):
-            if model == spec.loc[y, '모델명.모델명']:
-                return spec.loc[y, "애칭.Pet Name(영문)"]
-
-
-    mergePetName("SM-R815N")
-
-
-    def mergeOwner(model):
-        model = str(model)
-
-        for y in range(0, spec.index.size):
-            if model == spec.loc[y, '모델명.모델명']:
-                return spec.loc[y, "담당자.망연동 담당자"]
-
-
-    mergeOwner("SM-J415N")
-
     # swver["PetName"] = swver["모델명_clear"].apply(mergePetName)
-    swver["PetName"] = swver["모델명"].apply(mergePetName)
+    # swver["PetName"] = swver["모델명"].apply(mergePetName)
+    swver["PetName"] = swver["Petname(애칭)"]
+
     # swver["owner"] = swver["모델명_clear"].apply(mergeOwner)
-    swver["owner"] = swver["모델명"].apply(mergeOwner)
+    # swver["owner"] = swver["모델명"].apply(mergeOwner)
+    swver["owner"] = swver["승인담당자"]
     # swver[swver["모델명_clear"].str.contains("SHV-E470")].head()
 
     # 모델명 예외처리
@@ -354,66 +289,14 @@ def StartMakeDb():
     except Exception as ex:
         print("Write Fail : Can't access O: drive;" + str(ex))
 
-    ## spec 모델 list 저장
 
-    column = ['제조사.제조사', '애칭.Pet Name(애칭)', '애칭.Pet Name(영문)', '모델명.모델명', '형태.단말형태', '출시일.출시일']
-    spec1 = spec[column]
-    column_new = ['manufacturer', 'pet_name_kor', 'pet_name_eng', 'model', 'ue_type', 'ue_release_date']
-    spec1.columns = column_new
 
     print("## 모델 list 저장")
     file_name = os.path.join(os.getcwd(),lastdate,"plm_ue_list_DataWarehouse_" + lastdate.split("/")[1] + ".xls")
     file_name_csv1 = os.path.join(os.getcwd(), lastdate, "plm_ue_list_" + lastdate.split("/")[1].split("_")[0] + ".csv") ##update 날짜 표시
-    # file_name_csv2 = os.path.join(os.getcwd(), lastdate, "plm_ue_list_" + lastdate.split("/")[1] + ".csv") ##update 날짜 + 시간까지 표시
-    spec1.to_excel(file_name, index=False)
     swver1.to_csv(file_name_csv1)
-    # swver1.to_csv(file_name_csv2)
     print("Write Success : " + file_name)
 
-    try:
-        file_name = os.path.join("O:\\","2.전송파일함(PC - myDesk)","plm_ue_list_DataWarehouse_" + lastdate.split("/")[1] + ".xls")
-        spec1.to_excel(file_name, index=False)
-        print("Write Success : " + file_name)
-    except Exception as ex:
-        print("Write Fail : Can't access O: drive;" + str(ex))
-
-    print("Completed!!")
-
-    # Spec 최대 속도 확인
-
-    spec.head()
-
-    column = search_column(spec, "MC")
-    column
-
-    column += (search_column(spec, "Cat"))
-    column += (search_column(spec, "LTE-A"))
-    column
-
-    spec.loc[spec["모델명.모델명"] == "LM-G820N", column].T
-
-    column = (search_column(spec, "CA"))
-    spec.loc[spec["모델명.모델명"] == "LM-G820N", column].T
-
-    # Spec 통계 2
-    df = pd.read_excel(os.path.join(os.getcwd(),lastdate,"spec.xlsx"), header=None)
-
-    print(df.shape)
-    df.head()
-
-    df.iloc[0:3] = df.iloc[0:3].fillna(method='ffill', axis=1)
-    df.iloc[0:3] = df.iloc[0:3].fillna('')
-    df.columns = pd.MultiIndex.from_tuples(
-        zip(*df.iloc[0:3].to_records(index=False).tolist()))
-    df = df.iloc[3:]
-
-    df.head()
-
-    print(df.columns)
-
-    search_column(df, "CA")
-
-    # df['']
 
 ## Start
 if __name__ == "__main__":

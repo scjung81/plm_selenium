@@ -256,24 +256,29 @@ while(1):
     break
 
 
-#Spec
-driver.switch_to.default_content()
-driver.find_element_by_xpath('//*[@id="wrap"]/header/hgroup/ul/li[5]/span/a').click()
-driver.find_element_by_xpath('//*[@id="statistic_spec"]').click()
-
-# 엑셀 받기
-driver.switch_to.frame(driver.find_element_by_id("m_content")) #내부 frame 로 변경
-driver.find_element_by_xpath('//*[@id="spec_list"]/ul/li[5]/a[2]').click()
-# 이름 변경
-while(1):
-    sleep(1)
-    downloads_done()
-    try:
-        change_download_file_name("spec", "xlsx")
-    except Exception as ex:
-        print(ex)
-        continue
-    break
+# #Spec
+# driver.switch_to.default_content()
+# driver.find_element_by_xpath('//*[@id="wrap"]/header/hgroup/ul/li[5]/span/a').click()
+# driver.find_element_by_xpath('//*[@id="statistic_spec"]').click()
+#
+# # 엑셀 받기
+# driver.switch_to.frame(driver.find_element_by_id("m_content")) #내부 frame 로 변경
+# try:
+#     driver.find_element_by_xpath('//*[@id="spec_list"]/ul/li[5]/a[2]').click()
+# except :
+#     driver.find_element_by_xpath('//*[@id="spec_list"]/ul/li[6]/a[2]').click()
+#
+#
+# # 이름 변경
+# while(1):
+#     sleep(1)
+#     downloads_done()
+#     try:
+#         change_download_file_name("spec", "xlsx")
+#     except Exception as ex:
+#         print(ex)
+#         continue
+#     break
 
 driver.quit()
 
