@@ -25,7 +25,7 @@ try:
 except:
     ip_addr = None
 
-def sendMail(to=["jungil.kwon@sktelecom.com", "d99419a7.o365skt.onmicrosoft.com@apac.teams.ms"], title="title", text="Text", images=None, files=None):
+def sendMail(to=["sukchan.jung@sktelecom.com", "d99419a7.o365skt.onmicrosoft.com@apac.teams.ms"], title="title", text="Text", images=None, files=None):
     smtp = smtplib.SMTP(smtp_host, 587)
     # TLS 보안 시작
     smtp.starttls()
